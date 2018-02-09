@@ -79,6 +79,7 @@ def renderPage1():
 def renderPage2():
     return render_template('page2.html')
 
+#automatically called in to check who is logged in
 @github.tokengetter
 def get_github_oauth_token():
     return session.get('github_token')

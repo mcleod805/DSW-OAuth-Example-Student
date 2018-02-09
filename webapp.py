@@ -17,11 +17,11 @@ app.debug = True #Change this to False for production
 app.secret_key = os.environ['SECRET_KEY'] 
 oauth = OAuth(app)
 
-
+#set up github as OAuth provider
 github = oauth.remote_app(
     'github',
-    consumer_key=os.environ['GITHUB_CLIENT_ID'], 
-    consumer_secret=os.environ['GITHUB_CLIENT_SECRET'],
+    consumer_key=os.environ['GITHUB_CLIENT_ID'], #your web apps username for git hub OAuth
+    consumer_secret=os.environ['GITHUB_CLIENT_SECRET'],#your web apps password for git hub OAuth
     request_token_params={'scope': 'user:email'}, #request read-only access to the user's email.  For a list of possible scopes, see developer.github.com/apps/building-oauth-apps/scopes-for-oauth-apps
     base_url='https://api.github.com/',
     request_token_url=None,
@@ -30,7 +30,8 @@ github = oauth.remote_app(
     authorize_url='https://github.com/login/oauth/authorize' #URL for github's OAuth login
 )
 
-
+#context processors run before templated are rendured and add variable(s) to template's context
+#context processor must return a dictionary
 @app.context_processor
 def inject_logged_in():
     return {"logged_in":('github_token' in session)}
@@ -48,7 +49,7 @@ def logout():
     session.clear()
     return render_template('message.html', message='You were logged out')
 
-@app.route()#the route should match the callback URL registered with the OAuth provider
+@app.route(/login/authorized)#the route should match the callback URL registered with the OAuth provider
 def authorized():
     resp = github.authorized_response()
     if resp is None:
@@ -57,8 +58,12 @@ def authorized():
     else:
         try:
             #save user data and set log in message
+            session['github_token']=(resp['access_token'],'')
+            session['user_data']=github.get('user').data
+            message="you were successfully logged in as " + session ['user_data']['login']
         except:
             #clear the session and give error message
+            message='unable to login. please try again.'
     return render_template('message.html', message=message)
 
 

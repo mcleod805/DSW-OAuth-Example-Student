@@ -77,7 +77,7 @@ def renderPage1():
 
 @app.route('/page2')
 def renderPage2():
- if 'user_data' in session:
+    if 'user_data' in session:
         user_data_pprint = "repo:" + pprint.pformat(session['user_data']['public_repos'])
     else:
         user_data_pprint = '';

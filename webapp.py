@@ -81,7 +81,7 @@ def renderPage2():
         user_data_pprint = "repo:" + pprint.pformat(session['user_data']['public_repos'])
     else:
         user_data_pprint = '';
-    return render_template('page2.html')
+    return render_template('page2.html', dump_repo=user_data_pprint)
 
 #automatically called in to check who is logged in
 @github.tokengetter

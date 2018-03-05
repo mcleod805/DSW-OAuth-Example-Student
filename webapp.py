@@ -12,6 +12,8 @@ import os
 
 app = Flask(__name__)
 
+Flask("You were successfully logged in")
+
 app.debug = True #Change this to False for production
 
 app.secret_key = os.environ['SECRET_KEY'] 
